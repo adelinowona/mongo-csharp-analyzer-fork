@@ -38,4 +38,10 @@
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Core\DataModel\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\DataModel\" />
+  </ItemGroup>
 </Project>
