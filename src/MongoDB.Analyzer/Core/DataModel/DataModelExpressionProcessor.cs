@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace MongoDB.Analyzer.Core.Builders;
+namespace MongoDB.Analyzer.Core.DataModel;
 
 internal static class DataModelExpressionProcessor
 {
@@ -25,15 +25,10 @@ internal static class DataModelExpressionProcessor
         //var typesProcessor = new TypesProcessor();
 
         var nodesProcessed = new HashSet<SyntaxNode>();
-        
+
         // Find class declarations expressions
-        // TODO skip children iterations
-        foreach (var node in root.DescendantNodes(n => !nodesProcessed.Contains(n.Parent)).OfType<ClassDeclarationSyntax>())
+        foreach (var node in root.DescendantNodes().Where(n => n.IsKind(SyntaxKind.ClassDeclaration)))
         {
-            if (nodesProcessed.Contains(node.Parent))
-            {
-                continue;
-            }
             nodesProcessed.Add(node);
         }
 

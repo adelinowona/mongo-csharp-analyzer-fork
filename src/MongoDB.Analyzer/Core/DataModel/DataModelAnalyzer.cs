@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace MongoDB.Analyzer.Core.Builders;
+namespace MongoDB.Analyzer.Core.DataModel;
 
 internal static class DataModelAnalyzer
 {
@@ -38,70 +38,29 @@ internal static class DataModelAnalyzer
         return false;
     }
 
-    private static AnalysisStats ReportJson(MongoAnalyzerContext context, SyntaxNode[] DataModelAnalysis)
+    private static void ReportJson(MongoAnalyzerContext context, SyntaxNode[] DataModelAnalysis)
     {
         var semanticContext = context.SemanticModelAnalysisContext;
-        if (DataModelAnalysis.)
+        if (DataModelAnalysis.EmptyOrNull())
         {
-            return AnalysisStats.Empty;
+            return;
         }
 
-        var compilationResult = AnalysisCodeGenerator.Compile(context, buildersAnalysis);
-        if (!compilationResult.Success)
-        {
-            return AnalysisStats.Empty;
-        }
-
-        var driverVersion = compilationResult.BuildersTestCodeExecutor.DriverVersion;
         var settings = context.Settings;
-        int mqlCount = 0, internalExceptionsCount = 0, driverExceptionsCount = 0;
 
-        foreach (var analysisContext in buildersAnalysis.AnalysisNodeContexts)
+        foreach (var classDeclarationNode in DataModelAnalysis)
         {
-            var mqlResult = compilationResult.BuildersTestCodeExecutor.GenerateMql(analysisContext.EvaluationMethodName);
-            var location = analysisContext.Node.OriginalExpression.GetLocation();
+            var location = classDeclarationNode.GetLocation();
 
-            if (mqlResult.Mql != null)
-            {
-                var mql = analysisContext.Node.ConstantsRemapper.RemapConstants(mqlResult.Mql);
+            var diagnostics = Diagnostic.Create(
+                DataModelDiagnosticsRules.DiagnosticRulePoco2Json,
+                location,
+                "testing2");
 
-                var diagnostics = Diagnostic.Create(
-                    BuidersDiagnosticsRules.DiagnosticRuleBuilder2MQL,
-                    location,
-                    DecorateMessage(mql, driverVersion, context.Settings));
-
-                semanticContext.ReportDiagnostic(diagnostics);
-                mqlCount++;
-            }
-            else if (mqlResult.Exception != null)
-            {
-                var isDriverException = mqlResult.Exception.InnerException?.Source?.Contains("MongoDB.Driver") == true;
-
-                if (isDriverException || settings.OutputInternalExceptions)
-                {
-                    var diagnostics = Diagnostic.Create(
-                        BuidersDiagnosticsRules.DiagnosticRuleNotSupportedBuilderExpression,
-                        location,
-                        DecorateMessage(mqlResult.Exception.InnerException?.Message ?? "Unsupported builders expression", driverVersion, context.Settings));
-
-                    semanticContext.ReportDiagnostic(diagnostics);
-                }
-
-                if (!isDriverException)
-                {
-                    context.Logger.Log($"Exception while analyzing {analysisContext.Node}: {mqlResult.Exception.InnerException?.Message}");
-                    internalExceptionsCount++;
-                }
-                else
-                {
-                    driverExceptionsCount++;
-                }
-            }
+            semanticContext.ReportDiagnostic(diagnostics);
         }
-
-        return new AnalysisStats(mqlCount, internalExceptionsCount, driverExceptionsCount, compilationResult.MongoDBDriverVersion.ToString(3), null);
     }
 
-    private static string DecorateMessage(string message, string driverVersion, MongoDBAnalyzerSettings settings) =>
-        settings.OutputDriverVersion ? $"{message}_v{driverVersion}" : message;
+    private static string DecorateMessage(string message, int length) =>
+        $"{message}_num:{length}";
 }

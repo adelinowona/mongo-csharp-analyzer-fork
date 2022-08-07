@@ -16,7 +16,7 @@ namespace MongoDB.Analyzer.Core.DataModel;
 
 public static class DataModelDiagnosticsRules
 {
-    private const string DiagnosticIdPoco2Json = "MADataModel1001";
+    private const string DiagnosticIdPoco2Json = "MADataModel3001";
     private const string Category = "MongoDB.Analyzer.DataModel";
 
     public static readonly DiagnosticDescriptor DiagnosticRulePoco2Json = new(
