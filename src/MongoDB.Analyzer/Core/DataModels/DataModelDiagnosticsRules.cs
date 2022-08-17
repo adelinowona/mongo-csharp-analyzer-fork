@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace MongoDB.Analyzer.Core.DataModel;
+namespace MongoDB.Analyzer.Core.DataModels;
 
 public static class DataModelDiagnosticsRules
 {
     private const string DiagnosticIdPoco2Json = "MADataModel3001";
-    private const string Category = "MongoDB.Analyzer.DataModel";
+    private const string Category = "MongoDB.Analyzer.DataModels";
 
     public static readonly DiagnosticDescriptor DiagnosticRulePoco2Json = new(
         id: DiagnosticIdPoco2Json,

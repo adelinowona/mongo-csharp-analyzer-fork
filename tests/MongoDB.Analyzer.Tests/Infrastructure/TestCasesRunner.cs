@@ -47,7 +47,14 @@ internal static class TestCasesRunner
 
         if (!s_testResults.TryGetValue(testCollectionKey, out var testCasesResults))
         {
-            testCasesResults = await ExecuteTestCases(testCollectionKey);
+            if (diagnosticTestCase.DiagnosticRules[0].RuleId == DiagnosticRulesConstants.Poco2Json)
+            {
+                testCasesResults = await ExecuteClassTestCases(testCollectionKey);
+            }
+            else
+            {
+                testCasesResults = await ExecuteTestCases(testCollectionKey);
+            }
 
             s_testResults[testCollectionKey] = testCasesResults;
         }
@@ -75,6 +82,30 @@ internal static class TestCasesRunner
             .ToArray();
 
         var result = diagnosticsAndMethodNodes
+            .GroupBy(pair => pair.MethodNode.Identifier.Text)
+            .ToDictionary(
+                group => group.Key,
+                group => new DiagnosticTestCaseResult(group.Key, group.Select(pair => pair.Diagnostic).ToArray()));
+
+        return result;
+    }
+
+    private static async Task<IDictionary<string, DiagnosticTestCaseResult>> ExecuteClassTestCases(TestsBundleKey testsBundleKey)
+    {
+        var diagnostics = await DiagnosticsAnalyzer.Analyze(
+            testsBundleKey.TestFileName,
+            testsBundleKey.DriverVersion,
+            testsBundleKey.LinqVersion);
+
+        var diagnosticsAndClassNodes = diagnostics
+            .Where(d => DiagnosticRulesConstants.AllRules.Contains(d.Descriptor.Id))
+            .Select(d =>
+                (Diagnostic: d,
+                 MethodNode: (ClassDeclarationSyntax)d.Location.SourceTree.GetRoot()
+                 .FindNode(d.Location.SourceSpan)))
+            .ToArray();
+
+        var result = diagnosticsAndClassNodes
             .GroupBy(pair => pair.MethodNode.Identifier.Text)
             .ToDictionary(
                 group => group.Key,

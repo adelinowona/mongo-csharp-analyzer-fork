@@ -20,9 +20,15 @@ internal sealed class ExpressionsAnalysis
 
     public ExpressionAnalysisContext[] AnalysisNodeContexts { get; set; }
     public InvalidExpressionAnalysisNode[] InvalidExpressionNodes { get; set; }
+    public ClassAnalysisContext[] DeclarationNodeContexts { get; set; }
 }
 
 internal record ExpressionAnalysisContext(ExpressionAnalysisNode Node)
+{
+    public string EvaluationMethodName { get; set; }
+}
+
+internal record ClassAnalysisContext(SyntaxNode Node, string ArgumentTypeName)
 {
     public string EvaluationMethodName { get; set; }
 }

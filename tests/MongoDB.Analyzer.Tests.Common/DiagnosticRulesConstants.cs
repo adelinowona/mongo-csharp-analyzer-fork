@@ -22,6 +22,8 @@ namespace MongoDB.Analyzer.Tests.Common
 
         public const string Builders2MQL = "MABuilders1001";
         public const string NotSupportedBuildersExpression = "MABuilders2001";
+        public const string Poco2Json = "MADataModel3001";
+
 
         public const string NoRule = nameof(NoRule);
 
@@ -32,6 +34,7 @@ namespace MongoDB.Analyzer.Tests.Common
             MongoLinq2MQL,
             Builders2MQL,
             NotSupportedBuildersExpression,
+            Poco2Json,
             NoRule
         };
     }

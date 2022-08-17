@@ -120,4 +120,13 @@ namespace MongoDB.Analyzer.Tests.Common
         {
         }
     }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class ExpectedJsonAttribute : DiagnosticRuleTestCaseAttribute
+    {
+        public ExpectedJsonAttribute(string message, int startLine = -1, int endLine = -1) :
+            base(DiagnosticRulesConstants.Poco2Json, message, location: new Location(startLine, endLine))
+        {
+        }
+    }
 }

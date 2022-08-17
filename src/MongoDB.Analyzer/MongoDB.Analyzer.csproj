@@ -11,13 +11,14 @@
     <Company>MongoDB Inc.</Company>
     <Copyright>Copyright © 2010-present MongoDB Inc.</Copyright>
     <Description>MongoDB Roslyn analyzer for MongoDB .Net driver.</Description>
-    <InformationalVersion>1.0.0</InformationalVersion>
+    <InformationalVersion>9.6.0</InformationalVersion>
     <Product>MongoDB.Analyzer</Product>
     <ImplicitUsings>enable</ImplicitUsings>
 
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\MongoDB.Analyzer.Helpers\DataModels\JsonGenerator.cs" Link="Core\DataModels\HelpersResources\JsonGenerator.cs" />
     <EmbeddedResource Include="..\MongoDB.Analyzer.Helpers\Builders\MqlGenerator.cs" Link="Core\Builders\HelpersResources\MqlGenerator.cs" />
     <EmbeddedResource Include="..\MongoDB.Analyzer.Helpers\Builders\Renderer.cs" Link="Core\Builders\HelpersResources\Renderer.cs" />
     <EmbeddedResource Include="..\MongoDB.Analyzer.Helpers\Linq\EmptyCursor.cs" Link="Core\Linq\HelpersResources\EmptyCursor.cs" />
@@ -36,12 +37,5 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Core\DataModel\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\DataModel\" />
   </ItemGroup>
 </Project>

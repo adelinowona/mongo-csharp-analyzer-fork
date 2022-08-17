@@ -15,7 +15,7 @@
 using MongoDB.Analyzer.Core;
 using MongoDB.Analyzer.Core.Builders;
 using MongoDB.Analyzer.Core.Linq;
-using MongoDB.Analyzer.Core.DataModel;
+using MongoDB.Analyzer.Core.DataModels;
 
 namespace MongoDB.Analyzer;
 

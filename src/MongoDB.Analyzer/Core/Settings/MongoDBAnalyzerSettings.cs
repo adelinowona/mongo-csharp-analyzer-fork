@@ -28,8 +28,8 @@ internal enum LinqVersion
 internal record MongoDBAnalyzerSettings(
     [DefaultValue(false)] bool OutputDriverVersion = false,
     [DefaultValue(false)] bool OutputInternalExceptions = false,
-    [DefaultValue(false)] bool OutputInternalLogsToFile = false,
-    [DefaultValue(null)] string LogFileName = null,
+    [DefaultValue(true)] bool OutputInternalLogsToFile = true,
+    [DefaultValue("/Users/adelin.mbidaowona/Projects/mongo-training/mflix-cs/AnalyzerTests/analyzer_logs.txt")] string LogFileName = "/Users/adelin.mbidaowona/Projects/mongo-training/mflix-cs/AnalyzerTests/analyzer_logs.txt",
     [DefaultValue(true)] bool SendTelemetry = true,
     [DefaultValue(LinqVersion.V2)] LinqVersion DefaultLinqVersion = LinqVersion.V2)
 {

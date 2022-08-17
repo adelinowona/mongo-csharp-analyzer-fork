@@ -36,7 +36,7 @@ public sealed class CodeBasedTestCasesSourceAttribute : Attribute, ITestDataSour
     {
         var testCasesMethods = _testCasesProdiverType
             .GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-            .Where(m => m.MemberType == MemberTypes.Method &&
+            .Where(m => (m.MemberType == MemberTypes.Method || m.MemberType == MemberTypes.NestedType) &&
                 m.DeclaringType == _testCasesProdiverType &&
                 m.GetCustomAttributes().Any(a => a is DiagnosticRuleTestCaseAttribute));
 
