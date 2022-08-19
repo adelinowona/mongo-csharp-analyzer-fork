@@ -69,7 +69,7 @@ internal static class TestCasesRunner
             testsBundleKey.TestFileName,
             testsBundleKey.DriverVersion,
             testsBundleKey.LinqVersion);
-
+        
         var diagnosticsAndMethodNodes = diagnostics
             .Where(d => DiagnosticRulesConstants.AllRules.Contains(d.Descriptor.Id))
             .Select(d =>

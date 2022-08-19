@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>MongoDB.Analyzer</PackageId>
-    <PackageVersion>9.6.0</PackageVersion>
+    <PackageVersion>10.1.0</PackageVersion>
     <Authors>MongoDB Inc.</Authors>
     <Title>MongoDB.Analyzer</Title>
     <PackageIcon>packageIcon.png</PackageIcon>

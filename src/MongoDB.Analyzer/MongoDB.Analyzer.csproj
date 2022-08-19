@@ -11,7 +11,7 @@
     <Company>MongoDB Inc.</Company>
     <Copyright>Copyright © 2010-present MongoDB Inc.</Copyright>
     <Description>MongoDB Roslyn analyzer for MongoDB .Net driver.</Description>
-    <InformationalVersion>9.6.0</InformationalVersion>
+    <InformationalVersion>10.1.0</InformationalVersion>
     <Product>MongoDB.Analyzer</Product>
     <ImplicitUsings>enable</ImplicitUsings>
 

@@ -181,6 +181,25 @@ internal sealed class TypesProcessor
 
         foreach (var propertySymbol in typeProperties)
         {
+            var attributes = propertySymbol.GetAttributes().ToArray();
+
+            var attributeList = new SeparatedSyntaxList<AttributeSyntax>();
+
+            foreach (var attribute in attributes)
+            {
+                var attributeSyntax = attribute.ApplicationSyntaxReference.GetSyntax();
+                var attributeName = attributeSyntax.DescendantNodes().OfType<IdentifierNameSyntax>().First();
+                var attributeArguments = attributeSyntax.DescendantNodes().OfType<AttributeArgumentListSyntax>();
+                if (attributeArguments.Count() > 0)
+                {
+                    attributeList = attributeList.Add(SyntaxFactory.Attribute(attributeName, attributeArguments.Single()));
+                }
+                else
+                {
+                    attributeList = attributeList.Add(SyntaxFactory.Attribute(attributeName));
+                }
+            }
+            
             var typeSyntax = CreateTypeSyntaxForSymbol(propertySymbol.Type);
 
             var propertyDeclaration = SyntaxFactory.PropertyDeclaration(typeSyntax, propertySymbol.Name);
@@ -195,6 +214,11 @@ internal sealed class TypesProcessor
             if (propertySymbol.SetMethod != null)
             {
                 propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
+            }
+
+            if(attributeList.Count > 0)
+            {
+                propertyDeclaration = propertyDeclaration.AddAttributeLists(SyntaxFactory.AttributeList(attributeList));
             }
 
             members.Add(propertyDeclaration);

@@ -20,7 +20,6 @@ internal sealed class DataModelJsonGeneratorTemplateBuilder
     private readonly ClassDeclarationSyntax _jsonGeneratorDeclarationSyntax;
     private readonly MethodDeclarationSyntax _mainTestMethodNode;
     private readonly SyntaxToken classNameToken;
-    private readonly SyntaxNode _builderDefinitionNode;
 
     private ClassDeclarationSyntax _jsonGeneratorDeclarationSyntaxNew;
 
@@ -34,21 +33,15 @@ internal sealed class DataModelJsonGeneratorTemplateBuilder
         _jsonGeneratorDeclarationSyntaxNew = _jsonGeneratorDeclarationSyntax;
         _mainTestMethodNode = _jsonGeneratorDeclarationSyntax.GetSingleMethod(JsonGeneratorSyntaxElements.JsonGeneratorMainMethodName);
 
-        _builderDefinitionNode = _mainTestMethodNode.DescendantNodes()
-            .OfType<IdentifierNameSyntax>()
-            .Single(i => i.Identifier.Text == "Filter").Parent.Parent.Parent;
-
-        classNameToken = _mainTestMethodNode.DescendantTokens().Single(n => n.IsKind(SyntaxKind.StringLiteralToken));
+        classNameToken = _mainTestMethodNode.DescendantTokens()
+            .Single(n => n.IsKind(SyntaxKind.IdentifierToken) && n.Text == "TemplateType" && n.ValueText == "TemplateType");
     }
 
     public string AddClassDeclaration(string typeArgumentName, SyntaxNode classDeclaration)
     {
-        //var cn = new SyntaxToken();
-        //var newToken = SyntaxFactory.Token(default, SyntaxKind.StringLiteralToken, typeArgumentName, typeArgumentName, default);
+        var newToken = SyntaxFactory.Identifier(typeArgumentName);
 
-        //var newMethodDeclaration = _mainTestMethodNode.ReplaceToken(classNameToken, newToken.);
-
-        var newMethodDeclaration = _mainTestMethodNode.ReplaceNode(_builderDefinitionNode, _builderDefinitionNode);
+        var newMethodDeclaration = _mainTestMethodNode.ReplaceToken(classNameToken, newToken);
 
         var newJsonGeneratorMethodName = $"{_mainTestMethodNode.Identifier.Value}_{ _nextTestMethodIndex++}";
         newMethodDeclaration = newMethodDeclaration.WithIdentifier(SyntaxFactory.Identifier(newJsonGeneratorMethodName));

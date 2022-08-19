@@ -29,22 +29,20 @@ internal static class DataModelExpressionProcessor
         var typesProcessor = new TypesProcessor();
 
         var nodesProcessed = new HashSet<SyntaxNode>();
-
+    
         // Find class declarations
-        foreach (var node in root.DescendantNodes().Where(n => n.IsKind(SyntaxKind.ClassDeclaration)))
+        foreach (var node in root.DescendantNodes().Where(n => n.IsKind(SyntaxKind.ClassDeclaration) &&
+                                                          n.DescendantNodes().OfType<ClassDeclarationSyntax>().Count() == 0))
         {
-            //var namedType = (INamedTypeSymbol) semanticModel.GetTypeInfo(node).Type;
+            var namedType = (INamedTypeSymbol) semanticModel.GetDeclaredSymbol(node);
 
             nodesProcessed.Add(node);
 
             try
             {
-                //typesProcessor.ProcessTypeSymbol(namedType);
+                typesProcessor.ProcessTypeSymbol(namedType);
 
-                //context.Logger.Log($"namedType arguments: {namedType.TypeArguments.Length}");
-                //context.Logger.Log($"ProcessTypeSymbol: {typesProcessor.GetTypeSymbolToGeneratedTypeMapping(namedType)}");
-
-                var declarationContext = new ClassAnalysisContext(node, "");
+                var declarationContext = new ClassAnalysisContext(node, typesProcessor.GetTypeSymbolToGeneratedTypeMapping(namedType));
                 declarationContexts.Add(declarationContext);
             }
             catch (Exception ex)

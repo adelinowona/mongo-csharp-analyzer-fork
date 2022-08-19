@@ -39,11 +39,12 @@ internal static class AnalysisCodeGenerator
             context.Logger.Log($"Class name: {node.ArgumentTypeName}");
         }
 
+        var typesSyntaxTree = GenerateTypesSyntaxTree(classDeclarationAnalysis);
         var jsonGeneratorSyntaxTree = GenerateJsonGeneratorSyntaxTree(classDeclarationAnalysis);
 
         var compilation = CSharpCompilation.Create(
             DataModelAnalysisConstants.AnalysisAssemblyName,
-            new[] { jsonGeneratorSyntaxTree },
+            new[] { typesSyntaxTree, jsonGeneratorSyntaxTree },
             referencesContainer.References,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
@@ -89,5 +90,34 @@ internal static class AnalysisCodeGenerator
         }
 
         return testCodeBuilder.GenerateSyntaxTree();
+    }
+
+    private static SyntaxTree GenerateTypesSyntaxTree(ExpressionsAnalysis classDeclarationAnalysis)
+    {
+        var namespaceDeclarationSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(JsonGeneratorSyntaxElements.JsonGeneratorNamespace))
+            .AddMembers(classDeclarationAnalysis.TypesDeclarations);
+
+        var generatedTypesCompilationUnit = SyntaxFactory.CompilationUnit()
+            .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")),
+                SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("MongoDB.Bson")),
+                SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("MongoDB.Bson.Serialization.Attributes")),
+                 SyntaxFactory.UsingDirective(
+                    SyntaxFactory.NameEquals(SyntaxFactory.IdentifierName("BsonTypeCustom123")),
+                    SyntaxFactory.ParseName("MongoDB.Bson.BsonType")),
+                SyntaxFactory.UsingDirective(
+                    SyntaxFactory.NameEquals(SyntaxFactory.IdentifierName("BsonDocumentCustom123")),
+                    SyntaxFactory.ParseName("MongoDB.Bson.BsonDocument")),
+                SyntaxFactory.UsingDirective(
+                    SyntaxFactory.NameEquals(SyntaxFactory.IdentifierName("BsonValueCustom123")),
+                    SyntaxFactory.ParseName("MongoDB.Bson.BsonValue")),
+                SyntaxFactory.UsingDirective(
+                    SyntaxFactory.NameEquals(SyntaxFactory.IdentifierName("BsonObjectIdCustom123")),
+                    SyntaxFactory.ParseName("MongoDB.Bson.BsonObjectId")))
+            .AddMembers(namespaceDeclarationSyntax);
+
+        var syntaxTree = generatedTypesCompilationUnit.SyntaxTree
+            .WithRootAndOptions(generatedTypesCompilationUnit.SyntaxTree.GetRoot(), s_jsonGeneratorSyntaxTree.Options);
+
+        return syntaxTree;
     }
 }
